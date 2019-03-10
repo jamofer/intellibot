@@ -66,6 +66,22 @@ public abstract class RobotPythonWrapper {
         return keyword.startsWith(UNDERSCORE) || keyword.startsWith("ROBOT_LIBRARY_");
     }
 
+    private static PyDecorator getKeywordDecorator(@NotNull PyFunction function) {
+        PyDecoratorList decorators = function.getDecoratorList();
+
+        if (decorators == null) {
+            return null;
+        }
+
+        for (PyDecorator decorator : decorators.getDecorators()) {
+            String decorator_name = decorator.getName();
+            if (decorator_name != null && decorator_name.matches("^(robot.)?(api.)?(deco.)?keyword")) {
+                return decorator;
+            }
+        }
+        return null;
+    }
+
     protected static void addDefinedKeywords(@NotNull PyClass pythonClass, @NotNull final String namespace, @NotNull final Collection<DefinedKeyword> results) {
         pythonClass.visitMethods(
                 new Processor<PyFunction>() {
@@ -75,24 +91,21 @@ public abstract class RobotPythonWrapper {
                         String keyword = functionToKeyword(function.getName());
                         if (keyword != null) {
                             // Get info from @keyword
-                            PyDecoratorList decorators = function.getDecoratorList();
-                            if (decorators != null) {
-                                PyDecorator keyword_decorator = decorators.findDecorator("keyword");
-                                if (keyword_decorator != null) {
-                                    if (keyword_decorator.hasArgumentList()) {
-                                        // Get case 'name =' argument
-                                        PyExpression kwa = keyword_decorator.getKeywordArgument("name");
-                                        if (kwa != null) {
-                                            keyword = kwa.getText().replaceAll("^[\"|\']|[\"|\']$", "");
-                                        }
-                                        else {
-                                            // Otherwise, check if first argument is unnamed
-                                            PyExpression[] kda = keyword_decorator.getArguments();
+                            PyDecorator keyword_decorator = getKeywordDecorator(function);
+                            if (keyword_decorator != null) {
+                                if (keyword_decorator.hasArgumentList()) {
+                                    // Get case 'name =' argument
+                                    PyExpression kwa = keyword_decorator.getKeywordArgument("name");
+                                    if (kwa != null) {
+                                        keyword = kwa.getText().replaceAll("^[\"|\']|[\"|\']$", "");
+                                    }
+                                    else {
+                                        // Otherwise, check if first argument is unnamed
+                                        PyExpression[] kda = keyword_decorator.getArguments();
 
-                                            // Argument exists and is unnamed
-                                            if (kda.length > 0 && kda[0].getName() == null) {
-                                                keyword = kda[0].getText().replaceAll("^[\"|\']|[\"|\']$", "");
-                                            }
+                                        // Argument exists and is unnamed
+                                        if (kda.length > 0 && kda[0].getName() == null) {
+                                            keyword = kda[0].getText().replaceAll("^[\"|\']|[\"|\']$", "");
                                         }
                                     }
                                 }
