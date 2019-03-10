@@ -1,6 +1,6 @@
 ## IntelliJ/PyCharm Plugin for Robot Automation Framework
 
-** This is a fork including minor fixes with keyword decorators **
+**This is a fork including minor fixes with keyword decorators**
 
 This is a work in progress (the product of a 24 hour hack match), though at this point I have devoted far more time than that.
 Related feature request to JetBrains: [IDEA-97678](http://youtrack.jetbrains.com/issue/IDEA-97678).
