@@ -1,4 +1,4 @@
-<idea-plugin version="2">
+<idea-plugin>
     <id>com.millennialmedia.intellibot</id>
     <name>IntelliBot</name>
     <version>0.10.143.381</version>

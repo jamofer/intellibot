@@ -1,0 +1,38 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+
+plugins {
+    id "idea"
+    id "java"
+    id "org.jetbrains.intellij" version "0.4.2"
+}
+
+sourceSets {
+    main {
+        java.srcDir 'src'
+        resources.srcDir 'resources'
+    }
+    test {
+        java.srcDir 'test'
+        resources.srcDir 'testData'
+    }
+}
+
+patchPluginXml {
+    sinceBuild "173"
+    untilBuild "183.*"
+    destinationDir 'META-INF'
+}
+
+intellij {
+    version 'IC-181.5540.23' //IntelliJ IDEA 2016.3 dependency; for a full list of IntelliJ IDEA releases please see https://www.jetbrains.com/intellij-repository/releases
+    pluginName 'IntelliBot'
+    plugins = ["PythonCore:2018.1.181.5087.50"]
+}
+
+
+version '0.10.143.382'
