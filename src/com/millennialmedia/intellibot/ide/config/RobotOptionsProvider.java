@@ -2,7 +2,11 @@ package com.millennialmedia.intellibot.ide.config;
 
 import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.Project;
+import com.millennialmedia.intellibot.psi.element.Variable;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author mrubino
@@ -22,6 +26,7 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
         public boolean debug = false;
         public boolean capitalizeKeywords = false;
         public boolean inlineVariableSearch = false;
+        public String customBuiltInVariables = "";
     }
 
     private State state = new State();
@@ -43,6 +48,7 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
         this.state.globalVariables = state.globalVariables;
         this.state.capitalizeKeywords = state.capitalizeKeywords;
         this.state.inlineVariableSearch = state.inlineVariableSearch;
+        this.state.customBuiltInVariables = state.customBuiltInVariables;
     }
 
     public boolean isDebug() {
@@ -83,5 +89,13 @@ public class RobotOptionsProvider implements PersistentStateComponent<RobotOptio
 
     public void setInlineVariableSearch(boolean inlineVariableSearch) {
         this.state.inlineVariableSearch = inlineVariableSearch;
+    }
+
+    public String customBuiltInVariables() {
+        return this.state.customBuiltInVariables;
+    }
+
+    public void setCustomBuiltInVariables(String variables) {
+        this.state.customBuiltInVariables = variables;
     }
 }
