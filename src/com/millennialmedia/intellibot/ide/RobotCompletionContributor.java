@@ -199,7 +199,7 @@ public class RobotCompletionContributor extends CompletionContributor {
         RobotFile robotFile = (RobotFile) file;
         addVariablesToResult(robotFile.getDefinedVariables(), result, position);
 
-        customVariables.updateCustomVariables(RobotOptionsProvider.getInstance(file.getProject()).customBuiltInVariables());
+        customVariables.updateCustomVariables(RobotOptionsProvider.getInstance(file.getProject()).customBuiltInVariables(), file.getProject());
         addVariablesToResult(customVariables.getCustomVariables(), result, position);
 
         boolean includeTransitive = RobotOptionsProvider.getInstance(file.getProject()).allowTransitiveImports();
