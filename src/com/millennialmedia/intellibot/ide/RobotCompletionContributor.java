@@ -193,6 +193,7 @@ public class RobotCompletionContributor extends CompletionContributor {
         if (!(file instanceof RobotFile)) {
             return;
         }
+
         RobotFile robotFile = (RobotFile) file;
         addVariablesToResult(robotFile.getDefinedVariables(), result, position);
 

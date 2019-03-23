@@ -8,6 +8,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.MultiMap;
 import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.PyFile;
+import com.millennialmedia.intellibot.ide.config.RobotOptionsProvider;
 import com.millennialmedia.intellibot.ide.icons.RobotIcons;
 import com.millennialmedia.intellibot.psi.dto.ImportType;
 import com.millennialmedia.intellibot.psi.dto.VariableDto;
@@ -16,6 +17,7 @@ import com.millennialmedia.intellibot.psi.ref.RobotPythonClass;
 import com.millennialmedia.intellibot.psi.ref.RobotPythonFile;
 import com.millennialmedia.intellibot.psi.util.PerformanceCollector;
 import com.millennialmedia.intellibot.psi.util.ReservedVariable;
+import com.millennialmedia.intellibot.psi.util.ReservedVariableScope;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,6 +43,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     private Collection<KeywordFile> keywordFiles;
     private Collection<PsiFile> referencedFiles;
     private Collection<DefinedVariable> declaredVariables;
+    private LinkedHashSet<DefinedVariable> customVariables;
 
     public HeadingImpl(@NotNull final ASTNode node) {
         super(node);
@@ -125,6 +128,7 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
     private Collection<DefinedVariable> collectVariables() {
         Collection<DefinedVariable> results = new LinkedHashSet<DefinedVariable>();
         addBuiltInVariables(results);
+        addCustomVariables(results);
         if (containsVariables()) {
             for (PsiElement child : getChildren()) {
                 if (child instanceof DefinedVariable) {
@@ -164,6 +168,29 @@ public class HeadingImpl extends RobotPsiElementBase implements Heading {
         }
 
         return BUILT_IN_VARIABLES;
+    }
+
+    private synchronized void addCustomVariables(Collection<DefinedVariable> result) {
+        updateCustomVariables();
+
+        result.addAll(customVariables);
+    }
+
+    private synchronized void updateCustomVariables() {
+        customVariables = new LinkedHashSet<DefinedVariable>();
+
+        String customVariableNames = RobotOptionsProvider.getInstance(getProject()).customBuiltInVariables();
+
+        if (customVariableNames.isEmpty()) {
+            return;
+        }
+
+        for (String name : customVariableNames.split("\n")) {
+            PsiElement newVariable = ReservedVariableScope.Global.getVariable(getProject());
+            if (newVariable != null) {
+                customVariables.add(new VariableDto(newVariable, name, ReservedVariableScope.Global));
+            }
+        }
     }
 
     @NotNull

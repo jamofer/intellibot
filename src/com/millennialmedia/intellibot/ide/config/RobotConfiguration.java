@@ -23,6 +23,8 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
     private JCheckBox allowGlobalVariables;
     private JCheckBox capitalizeKeywords;
     private JCheckBox inlineVariableSearch;
+    private JTextArea customBuiltInVariables;
+    private JLabel customBuiltInVariablesLabel;
 
     public RobotConfiguration(@NotNull RobotOptionsProvider provider) {
         this.provider = provider;
@@ -64,7 +66,8 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
                 this.provider.allowTransitiveImports() != this.allowTransitiveImports.isSelected() ||
                 this.provider.allowGlobalVariables() != this.allowGlobalVariables.isSelected() ||
                 this.provider.capitalizeKeywords() != this.capitalizeKeywords.isSelected() ||
-                this.provider.inlineVariableSearch() != this.inlineVariableSearch.isSelected();
+                this.provider.inlineVariableSearch() != this.inlineVariableSearch.isSelected() ||
+                !this.provider.customBuiltInVariables().equals(this.customBuiltInVariables.getText());
     }
 
     @Override
@@ -74,6 +77,7 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
         this.provider.setGlobalVariables(this.allowGlobalVariables.isSelected());
         this.provider.setCapitalizeKeywords(this.capitalizeKeywords.isSelected());
         this.provider.setInlineVariableSearch(this.inlineVariableSearch.isSelected());
+        this.provider.setCustomBuiltInVariables(this.customBuiltInVariables.getText());
     }
 
     @Override
@@ -83,6 +87,7 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
         this.allowGlobalVariables.setSelected(this.provider.allowGlobalVariables());
         this.capitalizeKeywords.setSelected(this.provider.capitalizeKeywords());
         this.inlineVariableSearch.setSelected(this.provider.inlineVariableSearch());
+        this.customBuiltInVariables.setText(this.provider.customBuiltInVariables());
     }
 
     @Override
