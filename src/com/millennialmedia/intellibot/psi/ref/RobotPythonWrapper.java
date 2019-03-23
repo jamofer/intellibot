@@ -6,10 +6,9 @@ import com.millennialmedia.intellibot.psi.dto.KeywordDto;
 import com.millennialmedia.intellibot.psi.dto.VariableDto;
 import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
 import com.millennialmedia.intellibot.psi.element.DefinedVariable;
-import com.millennialmedia.intellibot.psi.util.FunctionParser;
+import com.millennialmedia.intellibot.psi.util.PythonParser;
 import com.millennialmedia.intellibot.psi.util.ReservedVariable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -19,38 +18,13 @@ import java.util.Collection;
  */
 public abstract class RobotPythonWrapper {
 
-    private static final String UNDERSCORE = "_";
-    private static final String SELF = "self";
-
-    protected static boolean hasArguments(@Nullable PyParameter[] parameters) {
-        if (parameters == null || parameters.length == 0) {
-            return false;
-        }
-
-        for (PyParameter parameter : parameters) {
-            String name = parameter.getName();
-            if (name != null && !SELF.equalsIgnoreCase(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    protected static String functionToKeyword(@Nullable String function) {
-        if (function == null || isPrivate(function)) {
-            return null;
-        } else {
-            return function;
-        }
-    }
-
     protected static void addDefinedVariables(@NotNull PyClass pythonClass, @NotNull final Collection<DefinedVariable> results) {
         pythonClass.visitClassAttributes(
                 new Processor<PyTargetExpression>() {
                     @Override
                     public boolean process(PyTargetExpression expression) {
-                        String keyword = expression.getName();
-                        if (keyword != null && !isPrivate(keyword)) {
+                        String keyword = PythonParser.keywordName(expression);
+                        if (keyword != null) {
                             // not formatted ${X}, assume scalar
                             results.add(new VariableDto(expression, ReservedVariable.wrapToScalar(keyword), null));
                         }
@@ -62,26 +36,6 @@ public abstract class RobotPythonWrapper {
         );
     }
 
-    private static boolean isPrivate(@NotNull String keyword) {
-        // these keeps out intended private functions
-        return keyword.startsWith(UNDERSCORE) || keyword.startsWith("ROBOT_LIBRARY_");
-    }
-
-    private static PyDecorator getKeywordDecorator(@NotNull PyFunction function) {
-        PyDecoratorList decorators = function.getDecoratorList();
-
-        if (decorators == null) {
-            return null;
-        }
-
-        for (PyDecorator decorator : decorators.getDecorators()) {
-            String decorator_name = decorator.getName();
-            if (decorator_name != null && decorator_name.matches("^(robot.)?(api.)?(deco.)?keyword")) {
-                return decorator;
-            }
-        }
-        return null;
-    }
 
     protected static void addDefinedKeywords(@NotNull PyClass pythonClass, @NotNull final String namespace, @NotNull final Collection<DefinedKeyword> results) {
         pythonClass.visitMethods(
@@ -89,9 +43,9 @@ public abstract class RobotPythonWrapper {
 
                     @Override
                     public boolean process(PyFunction function) {
-                        String keyword = FunctionParser.keywordName(function);
+                        String keyword = PythonParser.keywordName(function);
                         if (keyword != null) {
-                            results.add(new KeywordDto(function, namespace, keyword, FunctionParser.keywordHasArguments(function)));
+                            results.add(new KeywordDto(function, namespace, keyword, PythonParser.keywordHasArguments(function)));
                         }
                         return true;
                     }
@@ -104,7 +58,7 @@ public abstract class RobotPythonWrapper {
 
                     @Override
                     public boolean process(PyTargetExpression expression) {
-                        String keyword = functionToKeyword(expression.getName());
+                        String keyword = PythonParser.keywordName(expression);
                         if (keyword != null) {
                             results.add(new KeywordDto(expression, namespace, keyword, false));
                         }
