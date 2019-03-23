@@ -2,12 +2,12 @@
 
 ### Changes in IntelliBot-0.10.143.383:
 #### Custom Built-In variables
-Custom variables can be included in Robot Options. This feature could be useful for those who uses `--variable`argument in Robot Framework.
+Custom variables can be included in Robot Options. This feature could be useful for those who uses `--variable` argument in Robot Framework.
 ### Changes in IntelliBot-0.10.143.382:
 #### Keyword definition with decorator fixes
 * Search for keyword decorator in module functions.
 * Remove simple quotes on keyword definition with decorator.
-* Fix keyword decorator usage with relative/absoulute path.
+* Fix keyword decorator usage with relative/absolute path.
 ```python
 from robot import api
 from robot.api import deco
