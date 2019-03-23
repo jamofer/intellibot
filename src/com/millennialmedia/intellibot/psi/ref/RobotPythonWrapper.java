@@ -6,6 +6,7 @@ import com.millennialmedia.intellibot.psi.dto.KeywordDto;
 import com.millennialmedia.intellibot.psi.dto.VariableDto;
 import com.millennialmedia.intellibot.psi.element.DefinedKeyword;
 import com.millennialmedia.intellibot.psi.element.DefinedVariable;
+import com.millennialmedia.intellibot.psi.util.FunctionParser;
 import com.millennialmedia.intellibot.psi.util.ReservedVariable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -88,29 +89,9 @@ public abstract class RobotPythonWrapper {
 
                     @Override
                     public boolean process(PyFunction function) {
-                        String keyword = functionToKeyword(function.getName());
+                        String keyword = FunctionParser.keywordName(function);
                         if (keyword != null) {
-                            // Get info from @keyword
-                            PyDecorator keyword_decorator = getKeywordDecorator(function);
-                            if (keyword_decorator != null) {
-                                if (keyword_decorator.hasArgumentList()) {
-                                    // Get case 'name =' argument
-                                    PyExpression kwa = keyword_decorator.getKeywordArgument("name");
-                                    if (kwa != null) {
-                                        keyword = kwa.getText().replaceAll("^[\"|\']|[\"|\']$", "");
-                                    }
-                                    else {
-                                        // Otherwise, check if first argument is unnamed
-                                        PyExpression[] kda = keyword_decorator.getArguments();
-
-                                        // Argument exists and is unnamed
-                                        if (kda.length > 0 && kda[0].getName() == null) {
-                                            keyword = kda[0].getText().replaceAll("^[\"|\']|[\"|\']$", "");
-                                        }
-                                    }
-                                }
-                            }
-                            results.add(new KeywordDto(function, namespace, keyword, hasArguments(function.getParameterList().getParameters())));
+                            results.add(new KeywordDto(function, namespace, keyword, FunctionParser.keywordHasArguments(function)));
                         }
                         return true;
                     }
