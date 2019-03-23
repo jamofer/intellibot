@@ -1,6 +1,24 @@
 ## IntelliJ/PyCharm Plugin for Robot Automation Framework
 
-**This is a fork including minor fixes with keyword decorators**
+### Changes in IntelliBot-0.10.143.383:
+#### Custom Built-In variables
+Custom variables can be included in Robot Options. This feature could be useful for those who uses `--variable`argument in Robot Framework.
+### Changes in IntelliBot-0.10.143.382:
+#### Keyword definition with decorator fixes
+* Search for keyword decorator in module functions.
+* Remove simple quotes on keyword definition with decorator.
+* Fix keyword decorator usage with relative/absoulute path.
+```python
+from robot import api
+from robot.api import deco
+
+@api.deco.keyword('This works')
+def this_works():
+    pass
+@deco.keyword("And this")
+def and_this():
+    pass
+```
 
 This is a work in progress (the product of a 24 hour hack match), though at this point I have devoted far more time than that.
 Related feature request to JetBrains: [IDEA-97678](http://youtrack.jetbrains.com/issue/IDEA-97678).
@@ -18,7 +36,7 @@ Just search for 'Intellibot' under 'Browse Repositories...'.
 
 You can also install the plugin manually.
 To do so you can either download and [compile](https://github.com/millennialmedia/intellibot/wiki/Development-Setup) the project yourself.
-Or download the [intellibot.jar](https://github.com/millennialmedia/intellibot/raw/master/intellibot.jar) file in the project.
+Or download the [IntelliBot-0.10.143.383.zip](https://github.com/jamofer/intellibot/blob/master/IntelliBot-0.10.143.383.zip) file in the project.
 You can then install this plugin to your IDE by using the 'Install plugin from disk...' option.
 This version may be slightly ahead of the JetBrains repository though potentially slightly less stable.
 
