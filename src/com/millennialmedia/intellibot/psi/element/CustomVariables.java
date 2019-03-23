@@ -20,6 +20,10 @@ public class CustomVariables {
     public synchronized void updateCustomVariables(String customVariableNames, @NotNull Project project) {
         declaredVariables.clear();
 
+        if (customVariableNames.isEmpty()) {
+            return;
+        }
+
         for (String name : customVariableNames.split("\n")) {
             PsiElement newVariable = ReservedVariableScope.Global.getVariable(project);
             if (newVariable != null) {

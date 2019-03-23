@@ -24,6 +24,7 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
     private JCheckBox capitalizeKeywords;
     private JCheckBox inlineVariableSearch;
     private JTextArea customBuiltInVariables;
+    private JLabel customBuiltInVariablesLabel;
 
     public RobotConfiguration(@NotNull RobotOptionsProvider provider) {
         this.provider = provider;
@@ -86,7 +87,7 @@ public class RobotConfiguration implements SearchableConfigurable, Configurable.
         this.allowGlobalVariables.setSelected(this.provider.allowGlobalVariables());
         this.capitalizeKeywords.setSelected(this.provider.capitalizeKeywords());
         this.inlineVariableSearch.setSelected(this.provider.inlineVariableSearch());
-        this.customBuiltInVariables.setText("");
+        this.customBuiltInVariables.setText(this.provider.customBuiltInVariables());
     }
 
     @Override
