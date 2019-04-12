@@ -1,5 +1,9 @@
 ## IntelliJ/PyCharm Plugin for Robot Automation Framework
 
+### Changes in IntelliBot-0.10.143.384:
+#### Terminology configuration to support Robotic Process Automation (RPA)
+* Add support for `*** Tasks ***` (or `*** Task ***`) header.
+* Add support for Task Setup/Teardown/Template/Timeout settings.
 ### Changes in IntelliBot-0.10.143.383:
 #### Custom Built-In variables
 Custom variables can be included in Robot Options. This feature could be useful for those who uses `--variable` argument in Robot Framework.
@@ -9,10 +13,10 @@ Custom variables can be included in Robot Options. This feature could be useful 
 * Remove simple quotes on keyword definition with decorator.
 * Fix keyword decorator usage with relative/absolute path.
 ```python
-from robot import api
+import robot.api.deco.keyword
 from robot.api import deco
 
-@api.deco.keyword('This works')
+@robot.api.deco.keyword('This works')
 def this_works():
     pass
 @deco.keyword("And this")
@@ -36,7 +40,7 @@ Just search for 'Intellibot' under 'Browse Repositories...'.
 
 You can also install the plugin manually.
 To do so you can either download and [compile](https://github.com/millennialmedia/intellibot/wiki/Development-Setup) the project yourself.
-Or download the [IntelliBot-0.10.143.383.zip](https://github.com/jamofer/intellibot/blob/master/IntelliBot-0.10.143.383.zip) file in the project.
+Or download the [IntelliBot-0.10.143.384.zip](https://github.com/jamofer/intellibot/blob/master/IntelliBot-0.10.143.384.zip) file in the project.
 You can then install this plugin to your IDE by using the 'Install plugin from disk...' option.
 This version may be slightly ahead of the JetBrains repository though potentially slightly less stable.
 
